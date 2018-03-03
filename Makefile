@@ -1,3 +1,7 @@
-#randGen: g++ "Rand Generators"/randGenerators.cpp "Rand Generators"/randGenerators.h randGen
+all: randGen randTest
 
-#randTest: g++ "Randomness Tests"/randTests.cpp "Randomness Tests"/randTests.h randTests
+randGen: Rand\ Generators/randGenerators.cpp Rand\ Generators/randGenerators.h
+	g++ -o randGen.exe Rand\ Generators/randGenerators.cpp
+
+randTest: Randomness\ Tests/randTests.cpp Randomness\ Tests/randTests.h
+	g++ -o randTest.exe Randomness\ Tests/randTests.cpp	
