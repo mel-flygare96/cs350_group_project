@@ -9,5 +9,6 @@ const int NUM_GROUPS = 5;
 int testFrequency(int*, int[][NUM_RANGE]);
 int testSerial(int*, int[][NUM_RANGE]);
 string convertToString(int[][NUM_RANGE], int);
+int displayColumns(int[][NUM_RANGE], int);
 int writeToFile(string, string);
 int getRandList(string, int*);

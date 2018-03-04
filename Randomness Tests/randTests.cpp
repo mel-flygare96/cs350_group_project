@@ -17,6 +17,7 @@ int testSerial(int randList[], int serialTable[][NUM_RANGE]){
     }
     for(int j = 0; j < 1000000; ++j){
         if(j != 0 && j % 200000 == 0){
+            displayColumns(serialTable, j / 200000);
             writeToFile(convertToString(serialTable, NUM_RANGE), "mersenneSerialResults" + to_string(j / 200000) + ".txt");
             for(int i = 0; i < NUM_RANGE * NUM_RANGE; ++i){
                 serialTable[i / NUM_RANGE][i % NUM_RANGE] = 0;
@@ -28,6 +29,7 @@ int testSerial(int randList[], int serialTable[][NUM_RANGE]){
             ++serialTable[randList[j]][randList[j + 1]];
         }
     }
+    displayColumns(serialTable, 5);
     writeToFile(convertToString(serialTable, NUM_RANGE), "mersenneSerialResults5.txt");
     return 1;
 }
@@ -45,7 +47,7 @@ string convertToString(int testTable[][NUM_RANGE], int numRows){
         //cout << endl;
         outputString.push_back('\n');
     }
-    cout << outputString;
+//    cout << outputString;
     return outputString;
 }
 
@@ -70,6 +72,19 @@ int getRandList(string inputFile, int randList[]){
             in.ignore(10, ' ');
             randList[i] = tempNum - '0';
         }
+    }
+    return 1;
+}
+
+int displayColumns(int serialTable[][NUM_RANGE], int tableNum){
+    cout << "TABLE ";
+    cout << tableNum;
+    cout << '\n' << "==============================" << '\n';
+    for(int i = 0; i < NUM_RANGE; ++i){
+        for(int j = 0; j < NUM_RANGE; ++j){
+            cout << serialTable[j][i] << '\n';
+        }
+        cout << "====================" << '\n';
     }
     return 1;
 }
