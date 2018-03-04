@@ -11,6 +11,20 @@ int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
     return 1;
 }
 
+int testSerial(int randList[], int serialTable[][NUM_RANGE]){
+    for(int i = 0; i < NUM_RANGE * NUM_RANGE; ++i){
+        serialTable[i / NUM_RANGE][i % NUM_RANGE] = 0;
+    }
+    for(int j = 0; j < 1000000; ++j){
+        if(j == 999999){
+            ++serialTable[randList[j]][randList[0]];
+        } else {
+            ++serialTable[randList[j]][randList[j + 1]];
+        }
+    }
+    return 1;
+}
+
 string convertToString(int testTable[][NUM_RANGE], int numRows){
     string outputString = "";
 
@@ -57,10 +71,13 @@ int getRandList(string inputFile, int randList[]){
 int main(){
     int randList[1000000];
     int frequencyTable[NUM_GROUPS][NUM_RANGE];
+    int serialTable[NUM_RANGE][NUM_RANGE];
 
     getRandList("mersenneRandList.txt", randList);
     testFrequency(randList, frequencyTable);
+    testSerial(randList, serialTable);
     writeToFile(convertToString(frequencyTable, NUM_GROUPS), "mersenneFrequencyResults.txt");
+    writeToFile(convertToString(serialTable, NUM_RANGE), "mersenneSerialResults.txt");
 
     return 0;
 }
