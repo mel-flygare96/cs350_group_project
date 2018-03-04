@@ -1,24 +1,30 @@
 #include "randTests.h"
 #include <iostream>
 
-int testFrequency(int randList[], int numGroups, int frequencyTable[][NUM_RANGE]){
-    frequencyTable = new int[numGroups][NUM_RANGE];
-    for(int i = 0; i < numGroups; ++i){
-        ++frequencyTable[i / (1000000 / numGroups)][randList[i]];
+int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
+    for(int j = 0; j < NUM_RANGE * NUM_GROUPS; ++j){
+        frequencyTable[j / NUM_RANGE][j % NUM_RANGE] = 0;
+    }
+    for(int i = 0; i < 1000000; ++i){
+        ++frequencyTable[i / (1000000 / NUM_GROUPS)][randList[i]];
     }
     return 1;
 }
 
-string convertToString(int ** testTable, int numRows){
-    string outputString = NULL;
+string convertToString(int testTable[][NUM_RANGE], int numRows){
+    string outputString = "";
 
     for(int i = 0; i < numRows; ++i){
         for(int j = 0; j < NUM_RANGE; ++j){
             //outputString.push_back(to_string(testTable[i][j]));
-            outputString.append("herro ");
+            outputString.append(to_string(testTable[i][j]));
+            outputString.push_back(' ');
+            //cout << testTable[i][j] << " ";
         }
+        //cout << endl;
         outputString.push_back('\n');
     }
+    cout << outputString;
     return outputString;
 }
 
@@ -44,18 +50,17 @@ int getRandList(string inputFile, int randList[]){
             randList[i] = tempNum - '0';
         }
     }
-
-    for(int j = 50; j > 0; --j){
-        cout << randList[1000000 - j] << ' ';
-    }
     return 1;
 }
 
 
 int main(){
     int randList[1000000];
+    int frequencyTable[NUM_GROUPS][NUM_RANGE];
 
     getRandList("mersenneRandList.txt", randList);
+    testFrequency(randList, frequencyTable);
+    writeToFile(convertToString(frequencyTable, NUM_GROUPS), "mersenneFrequencyResults.txt");
 
     return 0;
 }
