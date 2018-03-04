@@ -11,14 +11,14 @@ int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
     return 1;
 }
 
-int testSerial(int randList[], int serialTable[][NUM_RANGE]){
+int testSerial(int randList[], int serialTable[][NUM_RANGE], string fileName){
     for(int i = 0; i < NUM_RANGE * NUM_RANGE; ++i){
         serialTable[i / NUM_RANGE][i % NUM_RANGE] = 0;
     }
     for(int j = 0; j < 1000000; ++j){
         if(j != 0 && j % 200000 == 0){
             displayColumns(serialTable, j / 200000);
-            writeToFile(convertToString(serialTable, NUM_RANGE), "mersenneSerialResults" + to_string(j / 200000) + ".txt");
+            writeToFile(convertToString(serialTable, NUM_RANGE), fileName + to_string(j / 200000) + ".txt");
             for(int i = 0; i < NUM_RANGE * NUM_RANGE; ++i){
                 serialTable[i / NUM_RANGE][i % NUM_RANGE] = 0;
             }
@@ -30,7 +30,7 @@ int testSerial(int randList[], int serialTable[][NUM_RANGE]){
         }
     }
     displayColumns(serialTable, 5);
-    writeToFile(convertToString(serialTable, NUM_RANGE), "mersenneSerialResults5.txt");
+    writeToFile(convertToString(serialTable, NUM_RANGE), fileName + "5.txt");
     return 1;
 }
 
@@ -96,10 +96,11 @@ int main(){
     int serialTable[NUM_RANGE][NUM_RANGE];
 
     getRandList("mersenneRandList.txt", randList);
-    testFrequency(randList, frequencyTable);
-    testSerial(randList, serialTable);
-    writeToFile(convertToString(frequencyTable, NUM_GROUPS), "mersenneFrequencyResults.txt");
-    //writeToFile(convertToString(serialTable, NUM_RANGE), "mersenneSerialResults.txt");
+    //getRandList("customRandList.txt", randList);
+    //testFrequency(randList, frequencyTable);
+    //testSerial(randList, serialTable, "customSerialResults");
+    testSerial(randList, serialTable, "mersenneSerialResults");
+    //writeToFile(convertToString(frequencyTable, NUM_GROUPS), "customFrequencyResults.txt");
 
     return 0;
 }
