@@ -5,7 +5,12 @@
 2. To compile the tests, run `make randTest`
 3. To compile both, run `make all`
 4. To run randGen, execute `./randGen.exe`
-5. To run randTest, run `./randTest.exe`
+5. To run randTest, run `./randTest.exe <engine type> <test type>`
+..* engine types: m - mersenne
+                  c - custom
+..* test type: f - frequency
+               s - serial
+               a - all
 
 ## Git Basics
 1. Follow this guide to generate an ssh key and add it to your github account: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/

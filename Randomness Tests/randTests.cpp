@@ -17,7 +17,7 @@ int testSerial(int randList[], int serialTable[][NUM_RANGE], string fileName){
     }
     for(int j = 0; j < 1000000; ++j){
         if(j != 0 && j % 200000 == 0){
-            displayColumns(serialTable, j / 200000);
+            //displayColumns(serialTable, j / 200000);
             writeToFile(convertToString(serialTable, NUM_RANGE), fileName + to_string(j / 200000) + ".txt");
             for(int i = 0; i < NUM_RANGE * NUM_RANGE; ++i){
                 serialTable[i / NUM_RANGE][i % NUM_RANGE] = 0;
@@ -29,7 +29,7 @@ int testSerial(int randList[], int serialTable[][NUM_RANGE], string fileName){
             ++serialTable[randList[j]][randList[j + 1]];
         }
     }
-    displayColumns(serialTable, 5);
+    //displayColumns(serialTable, 5);
     writeToFile(convertToString(serialTable, NUM_RANGE), fileName + "5.txt");
     return 1;
 }
@@ -90,16 +90,38 @@ int displayColumns(int serialTable[][NUM_RANGE], int tableNum){
 }
 
 
-int main(){
+int main(int argc, char *argv[]){
     int randList[1000000];
     int frequencyTable[NUM_GROUPS][NUM_RANGE];
     int serialTable[NUM_RANGE][NUM_RANGE];
 
-    getRandList("mersenneRandList.txt", randList);
+    string randEngine = "";
+
+    if(argc > 1 && argv[1][0] == 'm'){
+        randEngine = "mersenne";
+    } else if(argc > 1 && argv[1][0] == 'c'){
+        randEngine = "custom";
+    } else {
+        cerr << "Missing rand engine type" << endl;
+    }
+
+    getRandList(randEngine + "RandList.txt", randList);
+
+    if(argc < 2){
+        cerr << "Missing test type" << endl;
+    } else {
+        if(argv[2][0] == 'a' || argv[2][0] == 'f'){
+            testFrequency(randList, frequencyTable);
+        }
+        if(argv[2][0] == 'a' || argv[2][0] == 's'){
+            testSerial(randList, serialTable, randEngine + "SerialResults");
+        }
+    }
+
     //getRandList("customRandList.txt", randList);
     //testFrequency(randList, frequencyTable);
     //testSerial(randList, serialTable, "customSerialResults");
-    testSerial(randList, serialTable, "mersenneSerialResults");
+    //testSerial(randList, serialTable, randEngine + "SerialResults");
     //writeToFile(convertToString(frequencyTable, NUM_GROUPS), "customFrequencyResults.txt");
 
     return 0;
