@@ -1,13 +1,13 @@
-#cs350_group_project
+# cs350_group_project
 
-##Compilation and Execution
+## Compilation and Execution
 1. To compile the randGenerator, run `make randGen`
 2. To compile the tests, run `make randTest`
 3. To compile both, run `make all`
 4. To run randGen, execute `./randGen.exe`
 5. To run randTest, run `./randTest.exe`
 
-##Git Basics
+## Git Basics
 1. Follow this guide to generate an ssh key and add it to your github account: https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 1. (Alt) If you do not want to deal with the ssh key, use `git clone https://github.com/mel-flygare96/cs350_group_project.git`. This is easier than using ssh, but every
 time you push or pull, you will need to re-enter your github credentials. Annoying.
