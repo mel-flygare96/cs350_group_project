@@ -1,6 +1,11 @@
 #include "randTests.h"
 #include <iostream>
 
+int runTest(int randList[], int frequencyTable[][NUM_RANGE]){
+    int lower = 0;
+    int upper = 49999;
+}
+
 int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
     for(int j = 0; j < NUM_RANGE * NUM_GROUPS; ++j){
         frequencyTable[j / NUM_RANGE][j % NUM_RANGE] = 0;
