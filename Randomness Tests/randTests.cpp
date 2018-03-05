@@ -34,6 +34,88 @@ int testSerial(int randList[], int serialTable[][NUM_RANGE], string fileName){
     return 1;
 }
 
+int testPoker(int randList[], int pokerTable[], string fileName){
+    // bust, pair, 2 pair, 3-kind, full house, 4-kind, 5-kind
+    int numValues[NUM_RANGE];
+    int match = -1;
+   
+    for(int i = 0; i < NUM_RANGE; ++i){
+        numValues[i] = 0;
+    }
+
+    for(int k = 0; k < 7; ++k){
+        pokerTable[k] = 0;
+    }
+
+    for(int j = 0; j < 1000000; j += 5){
+        if(j != 0 && j % 200000 == 0){
+            //displayColumns(serialTable, j / 200000);
+            writeToFile(convertPokerToString(pokerTable), fileName + to_string(j / 200000) + ".txt");
+            for(int k = 0; k < 7; ++k){
+                pokerTable[k] = 0;
+            }
+        }
+        for(int i = 0; i < 5; ++i){
+            ++numValues[randList[j + i]];
+        }
+        match = matchHand(numValues);
+        if(match < 0){
+            return 0;
+        }
+        ++pokerTable[match];
+        for(int k = 0; k < NUM_RANGE; ++k){
+            numValues[k] = 0;
+        }
+    }
+    writeToFile(convertPokerToString(pokerTable), fileName + "5.txt");
+}
+
+int matchHand(int numValues[]){
+    map<int, int> handMap;
+    for(int i = 0; i < NUM_RANGE; ++i){
+        if(handMap.find(numValues[i]) != handMap.end()){
+            ++handMap[numValues[i]];
+        } else {
+            handMap[numValues[i]] = 1;
+        }
+    }
+    int pokerHands[7][5] = 
+    {
+        {1,1,1,1,1},    //bust                           
+        {1,1,1,2,0},             //pair
+        {1,2,2,0,0},             //2 pair
+        {1,1,3,0,0},             //3 kind
+        {2,3,0,0,0},             //full house
+        {1,4,0,0,0},             //4 kind
+        {5,0,0,0,0}              //5 kind
+    };
+ 
+    for(int j = 0; j < 7; ++j){
+        if(checkMap(handMap, pokerHands[j])){
+            return j;
+        }
+    }
+    return -1;
+}
+
+int checkMap(map<int, int> handMap, int pokerHand[]){
+     for(int i = 0; i < 5; ++i){
+        if(handMap.find(pokerHand[i]) != handMap.end()){
+            if(handMap[pokerHand[i]] == 0){
+                break;
+            } else {
+                --handMap[pokerHand[i]];
+            }
+        } else {
+            break;
+        }
+        if(i == 4){
+            return 1;
+        }
+    }
+    return 0;
+}
+
 string convertToString(int testTable[][NUM_RANGE], int numRows){
     string outputString = "";
 
@@ -48,6 +130,16 @@ string convertToString(int testTable[][NUM_RANGE], int numRows){
         outputString.push_back('\n');
     }
 //    cout << outputString;
+    return outputString;
+}
+
+string convertPokerToString(int pokerTable[]){
+    string outputString = "";
+
+    for(int i = 0; i < 7; ++i){
+        outputString.append(to_string(pokerTable[i]));
+        outputString.push_back('\n');
+    }
     return outputString;
 }
 
@@ -94,6 +186,7 @@ int main(int argc, char *argv[]){
     int randList[1000000];
     int frequencyTable[NUM_GROUPS][NUM_RANGE];
     int serialTable[NUM_RANGE][NUM_RANGE];
+    int pokerTable[7];
 
     string randEngine = "";
 
@@ -115,6 +208,9 @@ int main(int argc, char *argv[]){
         }
         if(argv[2][0] == 'a' || argv[2][0] == 's'){
             testSerial(randList, serialTable, randEngine + "SerialResults");
+        }
+        if(argv[2][0] == 'a' || argv[2][0] == 'p'){
+            testPoker(randList, pokerTable, randEngine + "PokerResults");
         }
     }
 
