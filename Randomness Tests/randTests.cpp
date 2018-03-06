@@ -1,9 +1,81 @@
 #include "randTests.h"
 #include <iostream>
 
-int runTest(int randList[], int frequencyTable[][NUM_RANGE]){
-    int lower = 0;
-    int upper = 49999;
+void log(int size, int trial, int table[][5]){
+    switch(size)
+    {
+        case 1: ++table[0][trial];
+                break;
+        case 2: ++table[1][trial];
+                break;
+        case 3: ++table[2][trial];
+                break;
+        case 4: ++table[3][trial];
+                break;
+        case 5: ++table[4][trial];
+                break;
+        default:++table[5][trial];
+    }
+}
+
+int sanityCheck(int trial, int table[][5])
+{
+    return table[0][trial] + 2*table[1][trial] + 3*table[2][trial] + 
+           4*table[3][trial] + 5*table[4][trial] + 6*table[5][trial];
+}
+
+int runTest(int randList[], int runTable[][5]){
+    int lower = 0;      //Lower index of current trial
+    int upper = 49999;  //Upper index of current trial
+    int count = 1;      //Size of current run, also used to ignore beginning in case of wrapping run
+    int wrapSize = 0;   //Stores size of initial run IFF the first and last elements are equal
+
+        //Initialize runTable
+    for(int i = 0; i < 6; ++i){
+        for(int j = 0; j < 5; ++j)
+            runTable[i][j] = 0;
+    }
+        //Outermost loop, performs 5 trials
+    for(int i = 0; i < 5; ++i){
+        //If wrapping run, skip the leading run
+        while(randList[wrapSize + lower] == randList[upper]){
+            ++wrapSize;
+        }
+        //Do the thing for the list
+        for(int j = lower + wrapSize; j <= upper; ++j){
+            if(j == upper){
+                log(count + wrapSize, i, runTable);
+            } else {
+                if(randList[j + lower] == randList[j + lower + i]){
+                    ++count;
+                } else {
+                    log(count, i, runTable);
+                    count = 1;
+                }
+            }
+        }
+        wrapSize = 0;
+        lower = upper + 1;
+        upper += 50000;
+        cout << "Trial " << i << ": " << sanityCheck(i, runTable) << " numbers, at least" << endl;
+    }
+    return 1;
+}
+
+string convertRunToString(int runTable[][5]){
+    string output = "";
+
+    for(int i = 1; i < 6; ++i)
+    {
+        output.append(to_string(i));
+        output.push_back('\n');
+        for(int j = 0; j < 6; ++j)
+        {
+            output.append(to_string(runTable[j][i]));
+            output.push_back('\n');
+        }
+    }
+    return output;
 }
 
 int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
@@ -15,6 +87,7 @@ int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
     }
     return 1;
 }
+
 
 int testSerial(int randList[], int serialTable[][NUM_RANGE], string fileName){
     for(int i = 0; i < NUM_RANGE * NUM_RANGE; ++i){
@@ -192,6 +265,7 @@ int main(int argc, char *argv[]){
     int frequencyTable[NUM_GROUPS][NUM_RANGE];
     int serialTable[NUM_RANGE][NUM_RANGE];
     int pokerTable[7];
+    int runTable[6][5];
 
     string randEngine = "";
 
@@ -216,6 +290,14 @@ int main(int argc, char *argv[]){
         }
         if(argv[2][0] == 'a' || argv[2][0] == 'p'){
             testPoker(randList, pokerTable, randEngine + "PokerResults");
+        }
+        if(argv[2][0] == 'a' || argv[2][0] == 'r'){
+            runTest(randList, runTable);
+            if(randEngine.compare("custom")){
+                writeToFile(convertRunToString(runTable), "mersenneRunResults.txt");
+            } else {
+                writeToFile(convertRunToString(runTable), "customRunResults.txt");
+            }
         }
     }
 

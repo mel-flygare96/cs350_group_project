@@ -12,6 +12,7 @@
    * test type: f - frequency  
                 s - serial  
                 p - poker
+                r - run
                 a - all
 
 ## Git Basics
