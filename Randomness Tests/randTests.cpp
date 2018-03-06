@@ -20,7 +20,7 @@ void log(int size, int trial, int table[][20]){
 
 int sanityCheck(int trial, int table[][20])
 {
-    cout << table[0][trial] << endl
+    cout << endl << table[0][trial] << endl
          << table[1][trial] << endl
          << table[2][trial] << endl
          << table[3][trial] << endl
@@ -61,6 +61,7 @@ string runTest(int randList[], int runTable[][20]){
     }
         //Outermost loop, performs 5 trials
     for(int i = 0; i < 20; ++i){
+        //cout << endl << "TEST:\nLower: " << lower << "\nUpper: " << upper << endl;
         //If wrapping run, skip the leading run
         while(randList[wrapSize + lower] == randList[upper]){
             ++wrapSize;
@@ -70,7 +71,7 @@ string runTest(int randList[], int runTable[][20]){
             if(j == upper){
                 log(count + wrapSize, i, runTable);
             } else {
-                if(randList[j + lower] == randList[j + lower + 1]){
+                if(randList[j] == randList[j+1]){
                     ++count;
                 } else {
                     log(count, i, runTable);
