@@ -1,7 +1,7 @@
 #include "randTests.h"
 #include <iostream>
 
-void log(int size, int trial, int table[][5]){
+void log(int size, int trial, int table[][20]){
     switch(size)
     {
         case 1: ++table[0][trial];
@@ -18,13 +18,37 @@ void log(int size, int trial, int table[][5]){
     }
 }
 
-int sanityCheck(int trial, int table[][5])
+int sanityCheck(int trial, int table[][20])
 {
+    cout << table[0][trial] << endl
+         << table[1][trial] << endl
+         << table[2][trial] << endl
+         << table[3][trial] << endl
+         << table[4][trial] << endl
+         << table[5][trial] << endl;
     return table[0][trial] + 2*table[1][trial] + 3*table[2][trial] + 
            4*table[3][trial] + 5*table[4][trial] + 6*table[5][trial];
 }
 
-int runTest(int randList[], int runTable[][5]){
+string convertRunToString(int runTable[][20]){
+    string output = "";
+
+    for(int i = 0; i < 20; ++i)
+    {
+        output.push_back('\n');
+        output.append(to_string(i+1));
+        output.push_back('\n');
+        for(int j = 0; j < 6; ++j)
+        {
+            output.append(to_string(runTable[j][i]));
+            output.push_back('\n');
+        }
+    }
+    return output;
+}
+
+
+string runTest(int randList[], int runTable[][20]){
     int lower = 0;      //Lower index of current trial
     int upper = 49999;  //Upper index of current trial
     int count = 1;      //Size of current run, also used to ignore beginning in case of wrapping run
@@ -32,11 +56,11 @@ int runTest(int randList[], int runTable[][5]){
 
         //Initialize runTable
     for(int i = 0; i < 6; ++i){
-        for(int j = 0; j < 5; ++j)
+        for(int j = 0; j < 20; ++j)
             runTable[i][j] = 0;
     }
         //Outermost loop, performs 5 trials
-    for(int i = 0; i < 5; ++i){
+    for(int i = 0; i < 20; ++i){
         //If wrapping run, skip the leading run
         while(randList[wrapSize + lower] == randList[upper]){
             ++wrapSize;
@@ -46,7 +70,7 @@ int runTest(int randList[], int runTable[][5]){
             if(j == upper){
                 log(count + wrapSize, i, runTable);
             } else {
-                if(randList[j + lower] == randList[j + lower + i]){
+                if(randList[j + lower] == randList[j + lower + 1]){
                     ++count;
                 } else {
                     log(count, i, runTable);
@@ -57,26 +81,11 @@ int runTest(int randList[], int runTable[][5]){
         wrapSize = 0;
         lower = upper + 1;
         upper += 50000;
-        cout << "Trial " << i << ": " << sanityCheck(i, runTable) << " numbers, at least" << endl;
+        cout << "Trial " << i+1 << ": " << sanityCheck(i, runTable) << " numbers, at least" << endl;
     }
-    return 1;
+    return convertRunToString(runTable);
 }
 
-string convertRunToString(int runTable[][5]){
-    string output = "";
-
-    for(int i = 1; i < 6; ++i)
-    {
-        output.append(to_string(i));
-        output.push_back('\n');
-        for(int j = 0; j < 6; ++j)
-        {
-            output.append(to_string(runTable[j][i]));
-            output.push_back('\n');
-        }
-    }
-    return output;
-}
 
 int testFrequency(int randList[], int frequencyTable[][NUM_RANGE]){
     for(int j = 0; j < NUM_RANGE * NUM_GROUPS; ++j){
@@ -265,7 +274,7 @@ int main(int argc, char *argv[]){
     int frequencyTable[NUM_GROUPS][NUM_RANGE];
     int serialTable[NUM_RANGE][NUM_RANGE];
     int pokerTable[7];
-    int runTable[6][5];
+    int runTable[6][20];
 
     string randEngine = "";
 
@@ -294,9 +303,9 @@ int main(int argc, char *argv[]){
         if(argv[2][0] == 'a' || argv[2][0] == 'r'){
             runTest(randList, runTable);
             if(randEngine.compare("custom")){
-                writeToFile(convertRunToString(runTable), "mersenneRunResults.txt");
+                writeToFile(runTest(randList, runTable), "mersenneRunResults.txt");
             } else {
-                writeToFile(convertRunToString(runTable), "customRunResults.txt");
+                writeToFile(runTest(randList, runTable), "customRunResults.txt");
             }
         }
     }
